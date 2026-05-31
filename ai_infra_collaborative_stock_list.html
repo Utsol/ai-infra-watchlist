@@ -1,0 +1,449 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0d0f10;
+  --surface: #141618;
+  --surface2: #1a1d20;
+  --border: rgba(255,255,255,0.07);
+  --border-hover: rgba(255,255,255,0.15);
+  --text: #e8eaed;
+  --muted: #6b7280;
+  --accent: #4ade80;
+  --accent-dim: rgba(74,222,128,0.12);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,0.12);
+  --amber: #fbbf24;
+  --blue: #60a5fa;
+  --blue-dim: rgba(96,165,250,0.12);
+  --purple: #a78bfa;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 2rem 1.5rem;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.title-block h1 {
+  font-family: 'DM Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--text);
+}
+.title-block p {
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 4px;
+  font-family: 'DM Mono', monospace;
+}
+.badge-count {
+  background: var(--accent-dim);
+  color: var(--accent);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(74,222,128,0.2);
+  margin-top: 6px;
+  display: inline-block;
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.btn {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.7rem;
+  padding: 7px 14px;
+  border-radius: 6px;
+  border: 1px solid var(--border-hover);
+  background: var(--surface2);
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .15s;
+}
+.btn:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
+.btn-primary {
+  background: var(--accent-dim);
+  border-color: rgba(74,222,128,0.3);
+  color: var(--accent);
+}
+.btn-primary:hover { background: rgba(74,222,128,0.2); color: var(--accent); }
+.filters {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 1.25rem;
+  flex-wrap: wrap;
+}
+.fil {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.68rem;
+  padding: 5px 10px;
+  border-radius: 5px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all .12s;
+}
+.fil.on { border-color: rgba(255,255,255,0.2); color: var(--text); background: var(--surface2); }
+.stock-list { display: flex; flex-direction: column; gap: 6px; }
+.stock-row {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  display: grid;
+  grid-template-columns: 70px 1fr 90px 90px 90px 90px 80px 56px;
+  align-items: center;
+  gap: 12px;
+  transition: border-color .15s, opacity .15s;
+  animation: fadeIn .25s ease;
+}
+.stock-row:hover { border-color: var(--border-hover); }
+.stock-row.removed { opacity: 0.3; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+.col-header {
+  background: transparent;
+  border: none;
+  padding: 0 16px 8px;
+  display: grid;
+  grid-template-columns: 70px 1fr 90px 90px 90px 90px 80px 56px;
+  gap: 12px;
+  font-family: 'DM Mono', monospace;
+  font-size: 0.63rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: .08em;
+}
+.ticker {
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  font-size: 0.82rem;
+  color: var(--text);
+}
+.flag-name { display: flex; flex-direction: column; gap: 2px; }
+.co-name { font-size: 0.78rem; font-weight: 500; }
+.co-sub { font-size: 0.66rem; color: var(--muted); font-family: 'DM Mono', monospace; display: flex; gap: 6px; align-items: center; }
+.cat-badge {
+  font-size: 0.6rem;
+  font-family: 'DM Mono', monospace;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+.num {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.78rem;
+  text-align: right;
+}
+.pos { color: var(--accent); }
+.neg { color: var(--red); }
+.neut { color: var(--muted); }
+.country-flag { font-size: 0.65rem; font-family: 'DM Mono', monospace; color: var(--muted); }
+
+.rm-btn {
+  width: 28px; height: 28px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  display: flex; align-items: center; justify-content: center;
+  transition: all .12s;
+  justify-self: end;
+}
+.rm-btn:hover { background: var(--red-dim); border-color: rgba(248,113,113,0.3); color: var(--red); }
+.rm-btn.restore { color: var(--accent); }
+.rm-btn.restore:hover { background: var(--accent-dim); border-color: rgba(74,222,128,0.3); color: var(--accent); }
+
+.add-panel {
+  margin-top: 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+  display: none;
+}
+.add-panel.open { display: block; animation: fadeIn .2s ease; }
+.add-panel h3 {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.75rem;
+  color: var(--muted);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+.add-form {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 8px;
+}
+.add-form input, .add-form select {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+  font-size: 0.72rem;
+  padding: 8px 10px;
+  outline: none;
+  transition: border-color .12s;
+}
+.add-form input:focus, .add-form select:focus { border-color: rgba(255,255,255,0.2); }
+.add-form input::placeholder { color: var(--muted); }
+.add-form select option { background: #1a1d20; }
+.add-actions { margin-top: 10px; display: flex; gap: 8px; }
+.status-bar {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-align: center;
+  padding: 1rem 0 0;
+}
+.saved-flash { color: var(--accent); }
+.show-removed { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--muted); cursor: pointer; margin-left: 8px; }
+.show-removed:hover { color: var(--text); }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="title-block">
+    <h1>AI infrastructure watchlist</h1>
+    <p>Hardware & electrical bottleneck plays · shared portfolio</p>
+    <span class="badge-count" id="count-badge">11 stocks active</span>
+  </div>
+  <div class="actions">
+    <button class="btn" onclick="toggleRemoved()"><span id="rm-label">show removed</span></button>
+    <button class="btn btn-primary" onclick="toggleAdd()">+ add stock</button>
+  </div>
+</div>
+
+<div class="filters" id="filter-bar">
+  <button class="fil on" data-f="all">All</button>
+  <button class="fil" data-f="US">🇺🇸 US</button>
+  <button class="fil" data-f="JP">🇯🇵 Japan</button>
+  <button class="fil" data-f="CN">🇨🇳 China</button>
+  <button class="fil" data-f="EU">🇪🇺 Europe</button>
+</div>
+
+<div class="col-header">
+  <span>Ticker</span>
+  <span>Company</span>
+  <span style="text-align:right">Price (USD)</span>
+  <span style="text-align:right">Mkt Cap</span>
+  <span style="text-align:right">P/E</span>
+  <span style="text-align:right">YTD</span>
+  <span style="text-align:right">Region</span>
+  <span></span>
+</div>
+
+<div class="stock-list" id="stock-list"></div>
+
+<div class="add-panel" id="add-panel">
+  <h3>Add a stock</h3>
+  <div class="add-form">
+    <input id="f-ticker" placeholder="Ticker (e.g. NVDA)" />
+    <input id="f-name" placeholder="Company name" />
+    <input id="f-country" placeholder="Country (e.g. US)" />
+    <input id="f-price" placeholder="Price (e.g. 145.00)" type="number" />
+    <input id="f-mktcap" placeholder="Mkt cap (e.g. 2.1T)" />
+    <input id="f-pe" placeholder="P/E (e.g. 35)" type="number" />
+    <input id="f-ytd" placeholder="YTD % (e.g. +12.4)" />
+    <select id="f-cat">
+      <option value="">Category</option>
+      <option>Power & grid</option>
+      <option>Cooling</option>
+      <option>Semicon capital</option>
+      <option>HBM memory</option>
+      <option>Optical interconnects</option>
+      <option>Mature-node foundry</option>
+      <option>Data-centre power</option>
+      <option>High-speed interconnects</option>
+      <option>Optical fiber & cable</option>
+      <option>Other</option>
+    </select>
+  </div>
+  <div class="add-actions">
+    <button class="btn btn-primary" onclick="addStock()">Add to list</button>
+    <button class="btn" onclick="toggleAdd()">Cancel</button>
+  </div>
+</div>
+
+<div class="status-bar" id="status"></div>
+
+<script>
+const CAT_COLORS = {
+  'Power & grid':        {bg:'rgba(96,165,250,0.1)',  color:'#60a5fa'},
+  'Cooling':             {bg:'rgba(74,222,128,0.1)',  color:'#4ade80'},
+  'Semicon capital':     {bg:'rgba(167,139,250,0.1)', color:'#a78bfa'},
+  'HBM memory':          {bg:'rgba(251,191,36,0.1)',  color:'#fbbf24'},
+  'Optical interconnects':{bg:'rgba(244,114,182,0.1)',color:'#f472b6'},
+  'Mature-node foundry': {bg:'rgba(248,113,113,0.1)', color:'#f87171'},
+  'Data-centre power':   {bg:'rgba(96,165,250,0.1)',  color:'#60a5fa'},
+  'High-speed interconnects':{bg:'rgba(244,114,182,0.1)',color:'#f472b6'},
+  'Optical fiber & cable':{bg:'rgba(251,191,36,0.1)', color:'#fbbf24'},
+  'Other':               {bg:'rgba(107,114,128,0.15)','color':'#9ca3af'},
+};
+const REGION_MAP = {'US':'US','JP':'JP','CN':'CN','NL':'EU','IE':'EU','Netherlands':'EU','Ireland':'EU','Japan':'JP','China':'CN','United States':'US'};
+const FLAGS = {'US':'🇺🇸','JP':'🇯🇵','CN':'🇨🇳','NL':'🇳🇱','IE':'🇮🇪','EU':'🇪🇺'};
+
+const DEFAULT = [
+  {ticker:'GEV',   name:'GE Vernova',        country:'US', price:'390.20', mktcap:'$108B', pe:'62',  ytd:'+18.4', cat:'Power & grid',        removed:false},
+  {ticker:'ETN',   name:'Eaton Corp.',        country:'IE', price:'330.10', mktcap:'$133B', pe:'35',  ytd:'+11.2', cat:'Power & grid',        removed:false},
+  {ticker:'VRT',   name:'Vertiv Holdings',    country:'US', price:'128.40', mktcap:'$48B',  pe:'54',  ytd:'+22.7', cat:'Cooling',             removed:false},
+  {ticker:'ASML',  name:'ASML Holding',       country:'NL', price:'742.00', mktcap:'$293B', pe:'38',  ytd:'+8.6',  cat:'Semicon capital',     removed:false},
+  {ticker:'AMAT',  name:'Applied Materials',  country:'US', price:'196.80', mktcap:'$164B', pe:'24',  ytd:'+5.1',  cat:'Semicon capital',     removed:false},
+  {ticker:'MU',    name:'Micron Technology',  country:'US', price:'130.50', mktcap:'$144B', pe:'16',  ytd:'+29.3', cat:'HBM memory',          removed:false},
+  {ticker:'COHR',  name:'Coherent Corp.',     country:'US', price:'92.30',  mktcap:'$18B',  pe:'28',  ytd:'+41.6', cat:'Optical interconnects',removed:false},
+  {ticker:'GFS',   name:'GlobalFoundries',    country:'US', price:'71.40',  mktcap:'$39B',  pe:'22',  ytd:'+33.8', cat:'Mature-node foundry', removed:false},
+  {ticker:'5802.T',name:'Sumitomo Electric',  country:'JP', price:'32.10',  mktcap:'$22B',  pe:'14',  ytd:'+19.5', cat:'Optical fiber & cable',removed:false},
+  {ticker:'300750',name:'CATL',               country:'CN', price:'51.20',  mktcap:'$224B', pe:'20',  ytd:'+12.1', cat:'Data-centre power',   removed:false},
+  {ticker:'002475',name:'Luxshare-ICT',       country:'CN', price:'18.40',  mktcap:'$46B',  pe:'19',  ytd:'+7.3',  cat:'High-speed interconnects',removed:false},
+];
+
+let stocks = [];
+let showRemoved = false;
+let activeFilter = 'all';
+
+async function load() {
+  try {
+    const r = await window.storage.get('portfolio-v2', true);
+    stocks = r ? JSON.parse(r.value) : [...DEFAULT];
+  } catch(e) { stocks = [...DEFAULT]; }
+  render();
+}
+
+async function save() {
+  try {
+    await window.storage.set('portfolio-v2', JSON.stringify(stocks), true);
+    flash('saved');
+  } catch(e) { flash('save failed', true); }
+}
+
+function flash(msg, err) {
+  const s = document.getElementById('status');
+  s.innerHTML = `<span class="${err?'':'saved-flash'}">${err?msg:'✓ '+msg} — changes visible to anyone with this link</span>`;
+  setTimeout(()=>{ s.textContent=''; }, 3000);
+}
+
+function getRegion(c) { return REGION_MAP[c] || c; }
+
+function render() {
+  const list = document.getElementById('stock-list');
+  list.innerHTML = '';
+  const filtered = stocks.filter(s => {
+    if (!showRemoved && s.removed) return false;
+    if (activeFilter === 'all') return true;
+    return getRegion(s.country) === activeFilter;
+  });
+  const active = stocks.filter(s=>!s.removed).length;
+  document.getElementById('count-badge').textContent = `${active} stock${active!==1?'s':''} active`;
+
+  filtered.forEach((s, idx) => {
+    const globalIdx = stocks.indexOf(s);
+    const row = document.createElement('div');
+    row.className = 'stock-row' + (s.removed?' removed':'');
+    const cat = CAT_COLORS[s.cat] || CAT_COLORS['Other'];
+    const ytdNum = parseFloat(s.ytd);
+    const ytdClass = ytdNum > 0 ? 'pos' : ytdNum < 0 ? 'neg' : 'neut';
+    const ytdDisplay = isNaN(ytdNum) ? s.ytd : (ytdNum>0?'+':'')+ytdNum.toFixed(1)+'%';
+    const flag = FLAGS[getRegion(s.country)] || '';
+
+    row.innerHTML = `
+      <div class="ticker">${s.ticker}</div>
+      <div class="flag-name">
+        <div class="co-name">${s.name}</div>
+        <div class="co-sub">
+          <span class="cat-badge" style="background:${cat.bg};color:${cat.color}">${s.cat}</span>
+        </div>
+      </div>
+      <div class="num neut">${s.price ? '$'+parseFloat(s.price).toFixed(2) : '—'}</div>
+      <div class="num neut">${s.mktcap || '—'}</div>
+      <div class="num neut">${s.pe ? s.pe+'x' : '—'}</div>
+      <div class="num ${ytdClass}">${ytdDisplay}</div>
+      <div class="num country-flag" style="text-align:right">${flag} ${s.country}</div>
+      <button class="rm-btn${s.removed?' restore':''}" onclick="toggleRemove(${globalIdx})" title="${s.removed?'Restore':'Remove'}">
+        ${s.removed ? '↩' : '×'}
+      </button>
+    `;
+    list.appendChild(row);
+  });
+
+  if (filtered.length === 0) {
+    list.innerHTML = '<div style="color:var(--muted);font-family:\'DM Mono\',monospace;font-size:.75rem;padding:2rem;text-align:center">no stocks match this filter</div>';
+  }
+}
+
+function toggleRemove(idx) {
+  stocks[idx].removed = !stocks[idx].removed;
+  save();
+  render();
+}
+
+function toggleRemoved() {
+  showRemoved = !showRemoved;
+  document.getElementById('rm-label').textContent = showRemoved ? 'hide removed' : 'show removed';
+  render();
+}
+
+function toggleAdd() {
+  const p = document.getElementById('add-panel');
+  p.classList.toggle('open');
+}
+
+function addStock() {
+  const t = document.getElementById('f-ticker').value.trim().toUpperCase();
+  const n = document.getElementById('f-name').value.trim();
+  if (!t || !n) { flash('ticker and name required', true); return; }
+  stocks.push({
+    ticker: t,
+    name: n,
+    country: document.getElementById('f-country').value.trim() || 'US',
+    price: document.getElementById('f-price').value || '—',
+    mktcap: document.getElementById('f-mktcap').value.trim() || '—',
+    pe: document.getElementById('f-pe').value || '—',
+    ytd: document.getElementById('f-ytd').value || '0',
+    cat: document.getElementById('f-cat').value || 'Other',
+    removed: false,
+  });
+  ['f-ticker','f-name','f-country','f-price','f-mktcap','f-pe','f-ytd'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('f-cat').value = '';
+  save();
+  render();
+  document.getElementById('add-panel').classList.remove('open');
+}
+
+document.getElementById('filter-bar').addEventListener('click', e => {
+  const btn = e.target.closest('.fil');
+  if (!btn) return;
+  document.querySelectorAll('.fil').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  activeFilter = btn.dataset.f;
+  render();
+});
+
+load();
+</script>
+</body>
+</html>
