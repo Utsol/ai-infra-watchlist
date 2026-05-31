@@ -1,275 +1,313 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>AI Infrastructure Watchlist</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,400&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0d0f10;
-  --surface: #141618;
-  --surface2: #1a1d20;
-  --border: rgba(255,255,255,0.07);
-  --border-hover: rgba(255,255,255,0.15);
-  --text: #e8eaed;
-  --muted: #6b7280;
-  --accent: #4ade80;
-  --accent-dim: rgba(74,222,128,0.12);
-  --red: #f87171;
-  --red-dim: rgba(248,113,113,0.12);
-  --amber: #fbbf24;
-  --blue: #60a5fa;
-  --blue-dim: rgba(96,165,250,0.12);
-  --purple: #a78bfa;
+  --bg: #080a0c;
+  --bg2: #0e1114;
+  --surface: #13161a;
+  --surface2: #1a1e23;
+  --border: rgba(255,255,255,0.06);
+  --border2: rgba(255,255,255,0.12);
+  --text: #dde1e7;
+  --muted: #5a6270;
+  --muted2: #8892a0;
+  --green: #3dffa0;
+  --green-dim: rgba(61,255,160,0.08);
+  --red: #ff6b6b;
+  --red-dim: rgba(255,107,107,0.08);
+  --amber: #ffb547;
+  --blue: #5bb8ff;
+  --blue-dim: rgba(91,184,255,0.1);
+  --purple: #b88aff;
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding: 2rem 1.5rem;
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:'IBM Plex Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  overflow-x:hidden;
 }
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 2rem;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-.title-block h1 {
-  font-family: 'DM Mono', monospace;
-  font-size: 1.1rem;
-  font-weight: 500;
-  letter-spacing: -0.02em;
-  color: var(--text);
-}
-.title-block p {
-  font-size: 0.72rem;
-  color: var(--muted);
-  margin-top: 4px;
-  font-family: 'DM Mono', monospace;
-}
-.badge-count {
-  background: var(--accent-dim);
-  color: var(--accent);
-  font-family: 'DM Mono', monospace;
-  font-size: 0.7rem;
-  padding: 3px 8px;
-  border-radius: 4px;
-  border: 1px solid rgba(74,222,128,0.2);
-  margin-top: 6px;
-  display: inline-block;
-}
-.actions {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-}
-.btn {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.7rem;
-  padding: 7px 14px;
-  border-radius: 6px;
-  border: 1px solid var(--border-hover);
-  background: var(--surface2);
-  color: var(--muted);
-  cursor: pointer;
-  transition: all .15s;
-}
-.btn:hover { color: var(--text); border-color: rgba(255,255,255,0.25); }
-.btn-primary {
-  background: var(--accent-dim);
-  border-color: rgba(74,222,128,0.3);
-  color: var(--accent);
-}
-.btn-primary:hover { background: rgba(74,222,128,0.2); color: var(--accent); }
-.filters {
-  display: flex;
-  gap: 6px;
-  margin-bottom: 1.25rem;
-  flex-wrap: wrap;
-}
-.fil {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.68rem;
-  padding: 5px 10px;
-  border-radius: 5px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  transition: all .12s;
-}
-.fil.on { border-color: rgba(255,255,255,0.2); color: var(--text); background: var(--surface2); }
-.stock-list { display: flex; flex-direction: column; gap: 6px; }
-.stock-row {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 16px;
-  display: grid;
-  grid-template-columns: 70px 1fr 90px 90px 90px 90px 80px 56px;
-  align-items: center;
-  gap: 12px;
-  transition: border-color .15s, opacity .15s;
-  animation: fadeIn .25s ease;
-}
-.stock-row:hover { border-color: var(--border-hover); }
-.stock-row.removed { opacity: 0.3; }
-@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-.col-header {
-  background: transparent;
-  border: none;
-  padding: 0 16px 8px;
-  display: grid;
-  grid-template-columns: 70px 1fr 90px 90px 90px 90px 80px 56px;
-  gap: 12px;
-  font-family: 'DM Mono', monospace;
-  font-size: 0.63rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: .08em;
-}
-.ticker {
-  font-family: 'DM Mono', monospace;
-  font-weight: 500;
-  font-size: 0.82rem;
-  color: var(--text);
-}
-.flag-name { display: flex; flex-direction: column; gap: 2px; }
-.co-name { font-size: 0.78rem; font-weight: 500; }
-.co-sub { font-size: 0.66rem; color: var(--muted); font-family: 'DM Mono', monospace; display: flex; gap: 6px; align-items: center; }
-.cat-badge {
-  font-size: 0.6rem;
-  font-family: 'DM Mono', monospace;
-  padding: 2px 6px;
-  border-radius: 4px;
-}
-.num {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.78rem;
-  text-align: right;
-}
-.pos { color: var(--accent); }
-.neg { color: var(--red); }
-.neut { color: var(--muted); }
-.country-flag { font-size: 0.65rem; font-family: 'DM Mono', monospace; color: var(--muted); }
 
-.rm-btn {
-  width: 28px; height: 28px;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--muted);
-  cursor: pointer;
-  font-size: 1rem;
-  line-height: 1;
-  display: flex; align-items: center; justify-content: center;
-  transition: all .12s;
-  justify-self: end;
+/* GRID TEXTURE */
+body::before{
+  content:'';
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.015) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(255,255,255,0.015) 1px,transparent 1px);
+  background-size:40px 40px;
+  pointer-events:none;z-index:0;
 }
-.rm-btn:hover { background: var(--red-dim); border-color: rgba(248,113,113,0.3); color: var(--red); }
-.rm-btn.restore { color: var(--accent); }
-.rm-btn.restore:hover { background: var(--accent-dim); border-color: rgba(74,222,128,0.3); color: var(--accent); }
 
-.add-panel {
-  margin-top: 1.5rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 16px;
-  display: none;
+.page{position:relative;z-index:1;max-width:1100px;margin:0 auto;padding:3rem 1.5rem 5rem;}
+
+/* HEADER */
+.site-header{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  margin-bottom:3rem;padding-bottom:2rem;
+  border-bottom:1px solid var(--border);
+  flex-wrap:wrap;gap:1.5rem;
 }
-.add-panel.open { display: block; animation: fadeIn .2s ease; }
-.add-panel h3 {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.75rem;
-  color: var(--muted);
-  margin-bottom: 12px;
-  text-transform: uppercase;
-  letter-spacing: .06em;
+.logo{
+  font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;
+  letter-spacing:-0.04em;color:var(--text);
 }
-.add-form {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-  gap: 8px;
+.logo span{color:var(--green);}
+.tagline{
+  font-family:'IBM Plex Mono',monospace;font-size:0.68rem;
+  color:var(--muted);margin-top:5px;letter-spacing:.04em;
 }
-.add-form input, .add-form select {
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text);
-  font-family: 'DM Mono', monospace;
-  font-size: 0.72rem;
-  padding: 8px 10px;
-  outline: none;
-  transition: border-color .12s;
+.header-right{display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.hbtn{
+  font-family:'IBM Plex Mono',monospace;font-size:0.68rem;
+  padding:7px 14px;border-radius:6px;
+  border:1px solid var(--border2);background:var(--surface);
+  color:var(--muted2);cursor:pointer;transition:all .15s;
 }
-.add-form input:focus, .add-form select:focus { border-color: rgba(255,255,255,0.2); }
-.add-form input::placeholder { color: var(--muted); }
-.add-form select option { background: #1a1d20; }
-.add-actions { margin-top: 10px; display: flex; gap: 8px; }
-.status-bar {
-  font-family: 'DM Mono', monospace;
-  font-size: 0.65rem;
-  color: var(--muted);
-  text-align: center;
-  padding: 1rem 0 0;
+.hbtn:hover{color:var(--text);border-color:rgba(255,255,255,0.2);}
+.hbtn-green{
+  background:var(--green-dim);border-color:rgba(61,255,160,0.25);
+  color:var(--green);
 }
-.saved-flash { color: var(--accent); }
-.show-removed { font-size: 0.68rem; font-family: 'DM Mono', monospace; color: var(--muted); cursor: pointer; margin-left: 8px; }
-.show-removed:hover { color: var(--text); }
+.hbtn-green:hover{background:rgba(61,255,160,0.14);color:var(--green);}
+
+/* STATS ROW */
+.stats-row{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));
+  gap:10px;margin-bottom:2rem;
+}
+.stat-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;padding:14px 16px;
+}
+.stat-label{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:5px;}
+.stat-val{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:700;color:var(--text);}
+.stat-sub{font-size:0.65rem;color:var(--muted);margin-top:2px;}
+
+/* FILTERS */
+.filter-row{display:flex;gap:6px;margin-bottom:1.5rem;flex-wrap:wrap;align-items:center;}
+.fil{
+  font-family:'IBM Plex Mono',monospace;font-size:0.65rem;
+  padding:5px 12px;border-radius:20px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;transition:all .12s;
+}
+.fil.on{border-color:rgba(255,255,255,0.18);color:var(--text);background:var(--surface2);}
+.search-wrap{margin-left:auto;}
+.search-wrap input{
+  font-family:'IBM Plex Mono',monospace;font-size:0.68rem;
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);padding:6px 12px;
+  outline:none;width:180px;transition:border-color .12s;
+}
+.search-wrap input:focus{border-color:var(--border2);}
+.search-wrap input::placeholder{color:var(--muted);}
+
+/* TABLE HEADER */
+.tbl-head{
+  display:grid;
+  grid-template-columns:72px 180px 1fr 80px 80px 76px 76px 80px 36px;
+  gap:10px;
+  padding:0 16px 8px;
+  font-family:'IBM Plex Mono',monospace;font-size:0.6rem;
+  color:var(--muted);text-transform:uppercase;letter-spacing:.07em;
+}
+.tr{text-align:right;}
+
+/* STOCK CARD */
+.stock-list{display:flex;flex-direction:column;gap:5px;}
+.stock-card{
+  background:var(--surface);border:1px solid var(--border);
+  border-radius:10px;overflow:hidden;
+  transition:border-color .15s;
+  animation:fadeUp .3s ease both;
+}
+.stock-card:hover{border-color:var(--border2);}
+.stock-card.removed{opacity:.28;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+
+.card-row{
+  display:grid;
+  grid-template-columns:72px 180px 1fr 80px 80px 76px 76px 80px 36px;
+  gap:10px;align-items:center;
+  padding:13px 16px;cursor:pointer;
+}
+.card-row:hover .ticker-sym{color:var(--green);}
+
+.ticker-sym{
+  font-family:'Syne',sans-serif;font-weight:700;font-size:0.9rem;
+  color:var(--text);transition:color .12s;
+}
+.co-block{display:flex;flex-direction:column;gap:2px;}
+.co-name{font-size:0.78rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.co-ctry{font-family:'IBM Plex Mono',monospace;font-size:0.6rem;color:var(--muted);}
+.cat-pill{
+  font-family:'IBM Plex Mono',monospace;font-size:0.58rem;
+  padding:2px 7px;border-radius:20px;white-space:nowrap;
+  display:inline-block;
+}
+.num-cell{
+  font-family:'IBM Plex Mono',monospace;font-size:0.75rem;
+  text-align:right;color:var(--muted2);
+}
+.pos{color:var(--green)!important;}
+.neg{color:var(--red)!important;}
+.expand-icon{
+  font-size:0.7rem;color:var(--muted);
+  text-align:center;transition:transform .2s;
+  font-family:'IBM Plex Mono',monospace;
+}
+.stock-card.open .expand-icon{transform:rotate(90deg);}
+
+/* EXPANDED PANEL */
+.card-detail{
+  display:none;border-top:1px solid var(--border);
+  padding:20px 20px 20px;
+  animation:fadeIn .2s ease;
+}
+.stock-card.open .card-detail{display:block;}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+.detail-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr;
+  gap:16px;
+}
+@media(max-width:700px){.detail-grid{grid-template-columns:1fr;}}
+
+.det-section{}
+.det-label{
+  font-family:'IBM Plex Mono',monospace;font-size:0.58rem;
+  text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
+  margin-bottom:6px;display:flex;align-items:center;gap:6px;
+}
+.det-label::after{content:'';flex:1;height:1px;background:var(--border);}
+.det-text{font-size:0.74rem;color:var(--muted2);line-height:1.65;}
+.det-text strong{color:var(--text);font-weight:500;}
+
+.ceo-name{
+  font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;
+  color:var(--text);margin-bottom:4px;
+}
+.ceo-edu{
+  font-family:'IBM Plex Mono',monospace;font-size:0.63rem;
+  color:var(--green);margin-bottom:8px;line-height:1.5;
+}
+
+/* REMOVE BTN */
+.rm-btn{
+  width:26px;height:26px;border-radius:5px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;font-size:0.9rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .12s;
+}
+.rm-btn:hover{background:var(--red-dim);border-color:rgba(255,107,107,0.3);color:var(--red);}
+.rm-btn.restore:hover{background:var(--green-dim);border-color:rgba(61,255,160,0.3);color:var(--green);}
+
+/* ADD PANEL */
+.add-panel{
+  margin-top:1rem;
+  background:var(--surface);border:1px solid var(--border2);
+  border-radius:12px;padding:20px;display:none;
+}
+.add-panel.open{display:block;animation:fadeIn .2s ease;}
+.add-panel h3{
+  font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;
+  color:var(--text);margin-bottom:14px;
+}
+.add-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));
+  gap:8px;margin-bottom:12px;
+}
+.add-grid input,.add-grid select,.add-grid textarea{
+  background:var(--surface2);border:1px solid var(--border);
+  border-radius:6px;color:var(--text);
+  font-family:'IBM Plex Mono',monospace;font-size:0.68rem;
+  padding:8px 10px;outline:none;transition:border-color .12s;
+  resize:vertical;
+}
+.add-grid input:focus,.add-grid select:focus,.add-grid textarea:focus{border-color:var(--border2);}
+.add-grid input::placeholder,.add-grid textarea::placeholder{color:var(--muted);}
+.add-grid select option{background:#1a1e23;}
+.add-grid .full{grid-column:1/-1;}
+.add-actions{display:flex;gap:8px;}
+
+/* STATUS */
+.status{
+  font-family:'IBM Plex Mono',monospace;font-size:0.63rem;
+  color:var(--muted);text-align:center;padding:1.2rem 0 0;
+  min-height:32px;
+}
+.ok{color:var(--green);}
+.err{color:var(--red);}
+
+/* EMPTY */
+.empty{
+  text-align:center;padding:3rem;
+  font-family:'IBM Plex Mono',monospace;font-size:0.72rem;color:var(--muted);
+}
 </style>
 </head>
 <body>
+<div class="page">
 
-<div class="header">
-  <div class="title-block">
-    <h1>AI infrastructure watchlist</h1>
-    <p>Hardware & electrical bottleneck plays · shared portfolio</p>
-    <span class="badge-count" id="count-badge">11 stocks active</span>
+<header class="site-header">
+  <div>
+    <div class="logo">AI Infra<span>.</span>Watch</div>
+    <div class="tagline">hardware & electrical bottleneck portfolio · collaborative</div>
   </div>
-  <div class="actions">
-    <button class="btn" onclick="toggleRemoved()"><span id="rm-label">show removed</span></button>
-    <button class="btn btn-primary" onclick="toggleAdd()">+ add stock</button>
+  <div class="header-right">
+    <button class="hbtn" onclick="toggleRemoved()" id="rm-toggle-btn">show removed</button>
+    <button class="hbtn" onclick="exportJSON()">export JSON</button>
+    <button class="hbtn hbtn-green" onclick="toggleAdd()">+ add stock</button>
   </div>
-</div>
+</header>
 
-<div class="filters" id="filter-bar">
-  <button class="fil on" data-f="all">All</button>
+<div class="stats-row" id="stats-row"></div>
+
+<div class="filter-row">
+  <button class="fil on" data-f="all">All regions</button>
   <button class="fil" data-f="US">🇺🇸 US</button>
   <button class="fil" data-f="JP">🇯🇵 Japan</button>
   <button class="fil" data-f="CN">🇨🇳 China</button>
   <button class="fil" data-f="EU">🇪🇺 Europe</button>
+  <div class="search-wrap">
+    <input type="text" id="search-box" placeholder="search ticker or name..." oninput="render()">
+  </div>
 </div>
 
-<div class="col-header">
+<div class="tbl-head">
   <span>Ticker</span>
   <span>Company</span>
-  <span style="text-align:right">Price (USD)</span>
-  <span style="text-align:right">Mkt Cap</span>
-  <span style="text-align:right">P/E</span>
-  <span style="text-align:right">YTD</span>
-  <span style="text-align:right">Region</span>
+  <span>Category</span>
+  <span class="tr">Price</span>
+  <span class="tr">Mkt Cap</span>
+  <span class="tr">P/E</span>
+  <span class="tr">YTD</span>
+  <span class="tr">Region</span>
   <span></span>
 </div>
 
 <div class="stock-list" id="stock-list"></div>
 
 <div class="add-panel" id="add-panel">
-  <h3>Add a stock</h3>
-  <div class="add-form">
-    <input id="f-ticker" placeholder="Ticker (e.g. NVDA)" />
-    <input id="f-name" placeholder="Company name" />
-    <input id="f-country" placeholder="Country (e.g. US)" />
-    <input id="f-price" placeholder="Price (e.g. 145.00)" type="number" />
-    <input id="f-mktcap" placeholder="Mkt cap (e.g. 2.1T)" />
-    <input id="f-pe" placeholder="P/E (e.g. 35)" type="number" />
-    <input id="f-ytd" placeholder="YTD % (e.g. +12.4)" />
+  <h3>Add a stock to the watchlist</h3>
+  <div class="add-grid">
+    <input id="f-ticker" placeholder="Ticker (e.g. NVDA)">
+    <input id="f-name" placeholder="Company name">
+    <input id="f-country" placeholder="Country (US / JP / CN / NL)">
+    <input id="f-price" placeholder="Price USD (e.g. 145.00)" type="number">
+    <input id="f-mktcap" placeholder="Mkt cap (e.g. 2.1T)">
+    <input id="f-pe" placeholder="P/E ratio" type="number">
+    <input id="f-ytd" placeholder="YTD % (e.g. +12.4)">
     <select id="f-cat">
       <option value="">Category</option>
       <option>Power & grid</option>
@@ -283,160 +321,326 @@ body {
       <option>Optical fiber & cable</option>
       <option>Other</option>
     </select>
+    <input id="f-ceo" placeholder="CEO name">
+    <input id="f-edu" placeholder="CEO education">
+    <input id="f-prev" placeholder="CEO previous role(s)">
+    <textarea id="f-desc" placeholder="What the company does (2–3 sentences)" rows="2" class="full"></textarea>
+    <textarea id="f-vision" placeholder="CEO vision / strategic direction" rows="2" class="full"></textarea>
   </div>
   <div class="add-actions">
-    <button class="btn btn-primary" onclick="addStock()">Add to list</button>
-    <button class="btn" onclick="toggleAdd()">Cancel</button>
+    <button class="hbtn hbtn-green" onclick="addStock()">Add stock</button>
+    <button class="hbtn" onclick="toggleAdd()">Cancel</button>
   </div>
 </div>
 
-<div class="status-bar" id="status"></div>
+<div class="status" id="status"></div>
+
+</div>
 
 <script>
-const CAT_COLORS = {
-  'Power & grid':        {bg:'rgba(96,165,250,0.1)',  color:'#60a5fa'},
-  'Cooling':             {bg:'rgba(74,222,128,0.1)',  color:'#4ade80'},
-  'Semicon capital':     {bg:'rgba(167,139,250,0.1)', color:'#a78bfa'},
-  'HBM memory':          {bg:'rgba(251,191,36,0.1)',  color:'#fbbf24'},
-  'Optical interconnects':{bg:'rgba(244,114,182,0.1)',color:'#f472b6'},
-  'Mature-node foundry': {bg:'rgba(248,113,113,0.1)', color:'#f87171'},
-  'Data-centre power':   {bg:'rgba(96,165,250,0.1)',  color:'#60a5fa'},
-  'High-speed interconnects':{bg:'rgba(244,114,182,0.1)',color:'#f472b6'},
-  'Optical fiber & cable':{bg:'rgba(251,191,36,0.1)', color:'#fbbf24'},
-  'Other':               {bg:'rgba(107,114,128,0.15)','color':'#9ca3af'},
+const CAT_STYLE = {
+  'Power & grid':              {bg:'rgba(91,184,255,0.1)',  c:'#5bb8ff'},
+  'Cooling':                   {bg:'rgba(61,255,160,0.1)',  c:'#3dffa0'},
+  'Semicon capital':           {bg:'rgba(184,138,255,0.1)', c:'#b88aff'},
+  'HBM memory':                {bg:'rgba(255,181,71,0.1)',  c:'#ffb547'},
+  'Optical interconnects':     {bg:'rgba(255,107,180,0.1)', c:'#ff6bb4'},
+  'Mature-node foundry':       {bg:'rgba(255,107,107,0.1)', c:'#ff6b6b'},
+  'Data-centre power':         {bg:'rgba(91,184,255,0.1)',  c:'#5bb8ff'},
+  'High-speed interconnects':  {bg:'rgba(255,107,180,0.1)', c:'#ff6bb4'},
+  'Optical fiber & cable':     {bg:'rgba(255,181,71,0.1)',  c:'#ffb547'},
+  'Other':                     {bg:'rgba(90,98,112,0.15)',  c:'#8892a0'},
 };
-const REGION_MAP = {'US':'US','JP':'JP','CN':'CN','NL':'EU','IE':'EU','Netherlands':'EU','Ireland':'EU','Japan':'JP','China':'CN','United States':'US'};
-const FLAGS = {'US':'🇺🇸','JP':'🇯🇵','CN':'🇨🇳','NL':'🇳🇱','IE':'🇮🇪','EU':'🇪🇺'};
 
-const DEFAULT = [
-  {ticker:'GEV',   name:'GE Vernova',        country:'US', price:'390.20', mktcap:'$108B', pe:'62',  ytd:'+18.4', cat:'Power & grid',        removed:false},
-  {ticker:'ETN',   name:'Eaton Corp.',        country:'IE', price:'330.10', mktcap:'$133B', pe:'35',  ytd:'+11.2', cat:'Power & grid',        removed:false},
-  {ticker:'VRT',   name:'Vertiv Holdings',    country:'US', price:'128.40', mktcap:'$48B',  pe:'54',  ytd:'+22.7', cat:'Cooling',             removed:false},
-  {ticker:'ASML',  name:'ASML Holding',       country:'NL', price:'742.00', mktcap:'$293B', pe:'38',  ytd:'+8.6',  cat:'Semicon capital',     removed:false},
-  {ticker:'AMAT',  name:'Applied Materials',  country:'US', price:'196.80', mktcap:'$164B', pe:'24',  ytd:'+5.1',  cat:'Semicon capital',     removed:false},
-  {ticker:'MU',    name:'Micron Technology',  country:'US', price:'130.50', mktcap:'$144B', pe:'16',  ytd:'+29.3', cat:'HBM memory',          removed:false},
-  {ticker:'COHR',  name:'Coherent Corp.',     country:'US', price:'92.30',  mktcap:'$18B',  pe:'28',  ytd:'+41.6', cat:'Optical interconnects',removed:false},
-  {ticker:'GFS',   name:'GlobalFoundries',    country:'US', price:'71.40',  mktcap:'$39B',  pe:'22',  ytd:'+33.8', cat:'Mature-node foundry', removed:false},
-  {ticker:'5802.T',name:'Sumitomo Electric',  country:'JP', price:'32.10',  mktcap:'$22B',  pe:'14',  ytd:'+19.5', cat:'Optical fiber & cable',removed:false},
-  {ticker:'300750',name:'CATL',               country:'CN', price:'51.20',  mktcap:'$224B', pe:'20',  ytd:'+12.1', cat:'Data-centre power',   removed:false},
-  {ticker:'002475',name:'Luxshare-ICT',       country:'CN', price:'18.40',  mktcap:'$46B',  pe:'19',  ytd:'+7.3',  cat:'High-speed interconnects',removed:false},
+const REGION_MAP = {US:'US',JP:'JP',CN:'CN',NL:'EU',IE:'EU',Netherlands:'EU',Ireland:'EU',Japan:'JP',China:'CN'};
+const FLAGS = {US:'🇺🇸',JP:'🇯🇵',CN:'🇨🇳',NL:'🇳🇱',IE:'🇮🇪',EU:'🇪🇺'};
+
+function reg(c){return REGION_MAP[c]||c;}
+
+const DEFAULT_STOCKS = [
+  {
+    ticker:'GEV', name:'GE Vernova', country:'US', price:'390.20', mktcap:'$108B', pe:'62', ytd:'+18.4',
+    cat:'Power & grid', removed:false,
+    desc:'GE Vernova builds the equipment that generates and moves electricity — gas turbines, wind turbines, grid transformers, and switchgear. Its technology helps produce roughly one quarter of the world\'s electricity across 100+ countries. Spun out of GE as an independent company in 2024, it is now the primary beneficiary of soaring data-centre power demand.',
+    ceo:'Scott Strazik', edu:'B.S. Industrial Labor Relations, Cornell University · M.S. International Economic Policy, Columbia SIPA',
+    prev:'CFO GE Aviation · CEO GE Power Services (2017) · CEO GE Gas Power (2018) · CEO GE Vernova at spin-off (2024)',
+    vision:'Electrify and decarbonise the planet. Strazik positions GE Vernova as the picks-and-shovels play for both the energy transition and the AI power surge, targeting a $200B backlog and $52B in revenue by 2028.'
+  },
+  {
+    ticker:'ETN', name:'Eaton Corp.', country:'IE', price:'330.10', mktcap:'$133B', pe:'35', ytd:'+11.2',
+    cat:'Power & grid', removed:false,
+    desc:'Eaton is the world\'s leading maker of electrical switchgear, circuit breakers, transformers, and power-distribution systems that connect the electricity grid to data-centre server racks. Founded in 1911, it serves customers in 180 countries and recently acquired Boyd Thermal for $9.5B to add liquid-cooling capability.',
+    ceo:'Paulo Ruiz', edu:'B.S. Electrical Engineering, FEI São Paulo · MBA Fundação Dom Cabral · Post-MBA Kellogg School of Management',
+    prev:'18+ years at Siemens including CEO of Dresser-Rand · Joined Eaton 2019 as President Hydraulics · President Industrial Sector · CEO June 2025',
+    vision:'Become the world\'s premier power management company. Ruiz is spinning off the Mobility division to create a pure-play Electrical and Aerospace leader, betting on AI, reindustrialisation, and grid electrification as decade-long structural tailwinds.'
+  },
+  {
+    ticker:'VRT', name:'Vertiv Holdings', country:'US', price:'128.40', mktcap:'$48B', pe:'54', ytd:'+22.7',
+    cat:'Cooling', removed:false,
+    desc:'Vertiv designs and manufactures the power and cooling infrastructure that sits inside data centres — UPS systems, precision cooling units, liquid-to-chip heat exchangers, and power distribution. As AI chips push rack power beyond 100 kW, traditional air cooling is no longer viable and Vertiv\'s liquid cooling systems have become essential.',
+    ceo:'Giordano Albertazzi', edu:'B.S. Mechanical Engineering, Politecnico di Milano · M.S. Management, Stanford Graduate School of Business',
+    prev:'Career-long Vertiv / Emerson Network Power: plant manager → EMEA President → COO (2022) → CEO January 2023',
+    vision:'Position Vertiv as the indispensable thermal and power layer of every AI data centre. Co-developing cooling solutions directly with NVIDIA for the Rubin GPU architecture, targeting $13.5B organic revenue in 2026.'
+  },
+  {
+    ticker:'ASML', name:'ASML Holding', country:'NL', price:'742.00', mktcap:'$293B', pe:'38', ytd:'+8.6',
+    cat:'Semicon capital', removed:false,
+    desc:'ASML is the only company in the world that makes Extreme Ultraviolet (EUV) lithography machines — the devices that physically etch circuits onto silicon wafers at 3nm, 2nm and below. Without ASML\'s machines, every major AI chip from NVIDIA, AMD, and Apple cannot be manufactured. Its flagship systems cost ~$400M each.',
+    ceo:'Christophe Fouquet', edu:'M.S. Physics, Institut Polytechnique de Grenoble (France)',
+    prev:'Global Product Manager, Applied Materials (1997–2001) · Marketing Director, KLA-Tencor (2003–2008) · EVP EUV at ASML (2018–2022) · Chief Business Officer (2022–2024) · CEO 2024',
+    vision:'Maintain ASML\'s monopoly on advanced lithography and push into High-NA EUV — the next generation of machines capable of sub-2nm chips. Fouquet has said publicly "no one is coming for us" and is advocating for European tech sovereignty.'
+  },
+  {
+    ticker:'AMAT', name:'Applied Materials', country:'US', price:'196.80', mktcap:'$164B', pe:'24', ytd:'+5.1',
+    cat:'Semicon capital', removed:false,
+    desc:'Applied Materials is the world\'s largest semiconductor equipment company by revenue, supplying the etch, deposition, inspection and packaging machines used at virtually every chip fab on earth. Its tools are used across logic chips, DRAM, HBM, NAND flash, and advanced packaging — making it a pick-and-shovel play across the entire AI silicon supply chain.',
+    ceo:'Gary Dickerson', edu:'B.S. Engineering Management, Univ. of Missouri-Rolla · MBA, Univ. of Missouri-Kansas City',
+    prev:'Delco Electronics (GM) & AT&T Technologies · 18 years at KLA-Tencor rising to President & COO · CEO Varian Semiconductor 7 years · Applied Materials President (2012) · CEO (2013)',
+    vision:'Drive higher-performance, more energy-efficient AI chips through materials engineering innovation. Dickerson opened a $5B EPIC Center R&D campus as a "lab-to-fab" pipeline, partnering with Micron and SK Hynix on next-generation HBM and advanced packaging.'
+  },
+  {
+    ticker:'MU', name:'Micron Technology', country:'US', price:'130.50', mktcap:'$144B', pe:'16', ytd:'+29.3',
+    cat:'HBM memory', removed:false,
+    desc:'Micron is the only US-based manufacturer of High-Bandwidth Memory (HBM) — the specialised stacked DRAM that sits directly alongside AI GPUs and feeds them data at terabytes per second. HBM has evolved from a commodity into mission-critical AI silicon, with Micron\'s entire 2026 production capacity sold out under fixed-price long-term contracts.',
+    ceo:'Sanjay Mehrotra', edu:'B.S. & M.S. Electrical Engineering & Computer Science, UC Berkeley · Stanford GSB Executive Program · 70+ patents in non-volatile memory',
+    prev:'Early career at Intel, SEEQ Technology, Integrated Device Technology · Co-founded SanDisk 1988 · SanDisk President & CEO 2011–2016 (sold to Western Digital for $19B) · Micron CEO 2017',
+    vision:'Make memory and storage the essential enablers of AI. Mehrotra announced a $200B US manufacturing investment across three facilities, targeting 40% domestic production by 2036 and 90,000 new jobs. The HBM shortage is structural, with meaningful new supply not arriving until 2028.'
+  },
+  {
+    ticker:'COHR', name:'Coherent Corp.', country:'US', price:'92.30', mktcap:'$18B', pe:'28', ytd:'+41.6',
+    cat:'Optical interconnects', removed:false,
+    desc:'Coherent manufactures the lasers, optical transceivers, and silicon photonic components that move data between GPUs at the speed of light inside AI clusters. It is also a critical supplier of high-power laser optics for EUV lithography and produces silicon carbide substrates used in power electronics. Its photonic technology is becoming the nervous system of large-scale AI factories.',
+    ceo:'Jim Anderson', edu:'B.S. Electrical Engineering, Univ. of Minnesota · M.S. Electrical Engineering, Purdue · MBA & M.S. EECS, MIT',
+    prev:'Intel · LSI Corp · Broadcom (Avago Technologies) · SVP/GM Computing & Graphics, AMD · CEO Lattice Semiconductor (2018–2024) · Coherent CEO June 2024',
+    vision:'Capitalise on silicon photonics and optical interconnects as the essential bandwidth layer of AI infrastructure. Anderson signed a strategic partnership with NVIDIA to develop next-generation photonics for AI factories, expanding manufacturing capacity aggressively through FY2027.'
+  },
+  {
+    ticker:'GFS', name:'GlobalFoundries', country:'US', price:'71.40', mktcap:'$39B', pe:'22', ytd:'+33.8',
+    cat:'Mature-node foundry', removed:false,
+    desc:'GlobalFoundries is the world\'s third-largest contract chipmaker, specialising in "feature-rich" mature semiconductor nodes (12nm–90nm) rather than the bleeding edge. These mature chips — power management ICs, RF wireless, mixed-signal, and microcontrollers — are the unglamorous but critical components inside every data centre, server, and network switch that AI infrastructure depends on.',
+    ceo:'Tim Breen', edu:'MBA, London Business School',
+    prev:'Partner, McKinsey & Company (Abu Dhabi) · Senior executive, Mubadala Investment Company (GF\'s sovereign-fund backer) · GF strategy & finance roles 2018–2023 · COO 2023 · CEO April 2025',
+    vision:'Manufacturing as strategy — build the most operationally efficient, geopolitically resilient mature-node foundry in the world. Launched silicon photonics co-packaged optics (SCALE platform) for AI networking in 2026 and paid GF\'s first-ever dividend, signalling confidence in durable profitability.'
+  },
+  {
+    ticker:'5802.T', name:'Sumitomo Electric', country:'JP', price:'32.10', mktcap:'$22B', pe:'14', ytd:'+19.5',
+    cat:'Optical fiber & cable', removed:false,
+    desc:'Sumitomo Electric is one of Japan\'s "Electric-Wire Big Three" — a 128-year-old manufacturer of optical fiber cables, copper power cables, and electrical components used in data-centre interconnects and grid infrastructure worldwide. Its optical fiber division is experiencing surging demand as AI data centres require orders of magnitude more fiber than traditional facilities.',
+    ceo:'Osamu Inoue', edu:'Joined Sumitomo Electric 1975; 50-year internal career across accounting, automotive, and international operations — no publicly disclosed university degree',
+    prev:'Sumitomo Electric accounting (Osaka Works) · GM Automotive Division Sumitomo Wiring Systems (US) · President Sumitomo Electric Bordnetze GmbH (Germany) · President Sumitomo Wiring Systems · President Sumitomo Electric 2017',
+    vision:'Position Sumitomo as the indispensable supplier of optical fiber and power cable for global AI and grid infrastructure buildout. One of the primary beneficiaries of hyperscaler data-centre investment in Japan from Microsoft, AWS, and Google.'
+  },
+  {
+    ticker:'300750 / 3750.HK', name:'CATL', country:'CN', price:'51.20', mktcap:'$224B', pe:'20', ytd:'+12.1',
+    cat:'Data-centre power', removed:false,
+    desc:'CATL is the world\'s largest EV battery manufacturer, now pivoting aggressively into AI data-centre power infrastructure. It is selling large-scale battery energy storage systems and HVDC (High-Voltage Direct Current) power solutions to data centres, invested $600M in Zhongheng Electric (a specialist in DC power for data centres), and is reportedly investing in AI startup DeepSeek.',
+    ceo:'Robin Zeng Yuqun', edu:'B.Eng. Shanghai Jiaotong University · M.Sc. South China University of Technology · Ph.D. Condensed Matter Physics, Chinese Academy of Sciences',
+    prev:'Co-founded ATL (lithium-ion batteries for consumer electronics) in 1999 · Founded CATL in 2011 in Ningde, Fujian · Built CATL into the world\'s #1 EV battery maker over a decade',
+    vision:'Use CATL\'s battery and energy storage expertise to power the next generation of AI data centres. Zeng plans to sell HVDC storage systems and power infrastructure to hyperscalers and is using AI internally to accelerate battery R&D — making AI both a customer and a tool.'
+  },
+  {
+    ticker:'002475', name:'Luxshare-ICT', country:'CN', price:'18.40', mktcap:'$46B', pe:'19', ytd:'+7.3',
+    cat:'High-speed interconnects', removed:false,
+    desc:'Luxshare-ICT is a Chinese precision manufacturer that makes the high-speed electrical connectors, backplane systems, and cable assemblies that link GPUs, switches, and servers inside AI clusters. Its 224G interconnect technology is already deployed in commercial AI clusters in China and globally. The company is expanding into liquid cooling and power management for data centres.',
+    ceo:'Wang Laichun (Grace Wang)', edu:'Junior high school graduate · EMBA, Tsinghua University · Entirely self-made',
+    prev:'Assembly-line operator at Foxconn Shenzhen aged 21 (1988) · Left Foxconn 1997 to start own venture · Co-founded Luxshare with brother Wang Laisheng in 2004 · Built into a major Apple and AI supply-chain manufacturer',
+    vision:'Expand Luxshare\'s precision manufacturing capabilities from consumer electronics into the AI data-centre supply chain at every layer — interconnects, power, and thermal management. Data-centre revenue hit RMB 24.6B in 2025 (+34% YoY) with 224G and 448G roadmap already in development.'
+  },
 ];
 
 let stocks = [];
 let showRemoved = false;
 let activeFilter = 'all';
+let openCards = new Set();
 
-async function load() {
-  try {
-    const r = await window.storage.get('portfolio-v2', true);
-    stocks = r ? JSON.parse(r.value) : [...DEFAULT];
-  } catch(e) { stocks = [...DEFAULT]; }
+function save(){
+  try{ localStorage.setItem('aiwatch-v3', JSON.stringify(stocks)); }catch(e){}
+  flashStatus('saved to local storage');
+}
+
+function load(){
+  try{
+    const d = localStorage.getItem('aiwatch-v3');
+    stocks = d ? JSON.parse(d) : JSON.parse(JSON.stringify(DEFAULT_STOCKS));
+  } catch(e){ stocks = JSON.parse(JSON.stringify(DEFAULT_STOCKS)); }
   render();
 }
 
-async function save() {
-  try {
-    await window.storage.set('portfolio-v2', JSON.stringify(stocks), true);
-    flash('saved');
-  } catch(e) { flash('save failed', true); }
+function flashStatus(msg, isErr){
+  const el = document.getElementById('status');
+  el.innerHTML = `<span class="${isErr?'err':'ok'}">${isErr?msg:'✓ '+msg}</span>`;
+  setTimeout(()=>{ el.textContent=''; }, 2500);
 }
 
-function flash(msg, err) {
-  const s = document.getElementById('status');
-  s.innerHTML = `<span class="${err?'':'saved-flash'}">${err?msg:'✓ '+msg} — changes visible to anyone with this link</span>`;
-  setTimeout(()=>{ s.textContent=''; }, 3000);
+function renderStats(){
+  const active = stocks.filter(s=>!s.removed);
+  const regions = [...new Set(active.map(s=>reg(s.country)))];
+  const cats = [...new Set(active.map(s=>s.cat))];
+  const avgYTD = active.length ? (active.reduce((a,s)=>{
+    const n=parseFloat(s.ytd); return a+(isNaN(n)?0:n);
+  },0)/active.filter(s=>!isNaN(parseFloat(s.ytd))).length).toFixed(1) : 0;
+
+  document.getElementById('stats-row').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Active stocks</div>
+      <div class="stat-val">${active.length}</div>
+      <div class="stat-sub">${stocks.length - active.length} removed</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Regions</div>
+      <div class="stat-val">${regions.length}</div>
+      <div class="stat-sub">${regions.join(' · ')}</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Categories</div>
+      <div class="stat-val">${cats.length}</div>
+      <div class="stat-sub">bottleneck themes</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Avg YTD</div>
+      <div class="stat-val" style="color:${avgYTD>0?'var(--green)':'var(--red)'}">${avgYTD>0?'+':''}${avgYTD}%</div>
+      <div class="stat-sub">active positions</div>
+    </div>
+  `;
 }
 
-function getRegion(c) { return REGION_MAP[c] || c; }
-
-function render() {
+function render(){
+  renderStats();
   const list = document.getElementById('stock-list');
   list.innerHTML = '';
-  const filtered = stocks.filter(s => {
-    if (!showRemoved && s.removed) return false;
-    if (activeFilter === 'all') return true;
-    return getRegion(s.country) === activeFilter;
+  const q = (document.getElementById('search-box').value||'').toLowerCase();
+
+  const filtered = stocks.filter(s=>{
+    if(!showRemoved && s.removed) return false;
+    if(activeFilter!=='all' && reg(s.country)!==activeFilter) return false;
+    if(q && !s.ticker.toLowerCase().includes(q) && !s.name.toLowerCase().includes(q)) return false;
+    return true;
   });
-  const active = stocks.filter(s=>!s.removed).length;
-  document.getElementById('count-badge').textContent = `${active} stock${active!==1?'s':''} active`;
 
-  filtered.forEach((s, idx) => {
-    const globalIdx = stocks.indexOf(s);
-    const row = document.createElement('div');
-    row.className = 'stock-row' + (s.removed?' removed':'');
-    const cat = CAT_COLORS[s.cat] || CAT_COLORS['Other'];
-    const ytdNum = parseFloat(s.ytd);
-    const ytdClass = ytdNum > 0 ? 'pos' : ytdNum < 0 ? 'neg' : 'neut';
-    const ytdDisplay = isNaN(ytdNum) ? s.ytd : (ytdNum>0?'+':'')+ytdNum.toFixed(1)+'%';
-    const flag = FLAGS[getRegion(s.country)] || '';
+  if(!filtered.length){
+    list.innerHTML = '<div class="empty">no stocks match · try a different filter or search</div>';
+    return;
+  }
 
-    row.innerHTML = `
-      <div class="ticker">${s.ticker}</div>
-      <div class="flag-name">
-        <div class="co-name">${s.name}</div>
-        <div class="co-sub">
-          <span class="cat-badge" style="background:${cat.bg};color:${cat.color}">${s.cat}</span>
+  filtered.forEach((s, fi)=>{
+    const gi = stocks.indexOf(s);
+    const isOpen = openCards.has(gi);
+    const cs = CAT_STYLE[s.cat]||CAT_STYLE['Other'];
+    const ytdN = parseFloat(s.ytd);
+    const ytdDisp = isNaN(ytdN)?s.ytd:(ytdN>0?'+':'')+ytdN.toFixed(1)+'%';
+    const ytdCls = ytdN>0?'pos':ytdN<0?'neg':'';
+    const flag = FLAGS[reg(s.country)]||'';
+    const delay = fi*0.04;
+
+    const card = document.createElement('div');
+    card.className = 'stock-card'+(s.removed?' removed':'')+(isOpen?' open':'');
+    card.style.animationDelay = delay+'s';
+
+    card.innerHTML = `
+      <div class="card-row" onclick="toggleCard(${gi})">
+        <div class="ticker-sym">${s.ticker}</div>
+        <div class="co-block">
+          <div class="co-name">${s.name}</div>
+          <div class="co-ctry">${flag} ${s.country}</div>
+        </div>
+        <div>
+          <span class="cat-pill" style="background:${cs.bg};color:${cs.c}">${s.cat}</span>
+        </div>
+        <div class="num-cell">${s.price?'$'+parseFloat(s.price).toFixed(2):'—'}</div>
+        <div class="num-cell">${s.mktcap||'—'}</div>
+        <div class="num-cell">${s.pe?s.pe+'x':'—'}</div>
+        <div class="num-cell ${ytdCls}">${ytdDisp}</div>
+        <div class="num-cell">${flag} ${reg(s.country)}</div>
+        <button class="rm-btn${s.removed?' restore':''}" onclick="event.stopPropagation();toggleRemove(${gi})" title="${s.removed?'Restore':'Remove'}">
+          ${s.removed?'↩':'×'}
+        </button>
+      </div>
+      <div class="card-detail">
+        <div class="detail-grid">
+          <div class="det-section">
+            <div class="det-label">What they do</div>
+            <div class="det-text">${s.desc||'No description added yet.'}</div>
+          </div>
+          <div class="det-section">
+            <div class="det-label">CEO profile</div>
+            <div class="ceo-name">${s.ceo||'—'}</div>
+            <div class="ceo-edu">${s.edu||''}</div>
+            <div class="det-text"><strong>Previous:</strong> ${s.prev||'—'}</div>
+          </div>
+          <div class="det-section">
+            <div class="det-label">Vision</div>
+            <div class="det-text">${s.vision||'No vision statement added yet.'}</div>
+          </div>
         </div>
       </div>
-      <div class="num neut">${s.price ? '$'+parseFloat(s.price).toFixed(2) : '—'}</div>
-      <div class="num neut">${s.mktcap || '—'}</div>
-      <div class="num neut">${s.pe ? s.pe+'x' : '—'}</div>
-      <div class="num ${ytdClass}">${ytdDisplay}</div>
-      <div class="num country-flag" style="text-align:right">${flag} ${s.country}</div>
-      <button class="rm-btn${s.removed?' restore':''}" onclick="toggleRemove(${globalIdx})" title="${s.removed?'Restore':'Remove'}">
-        ${s.removed ? '↩' : '×'}
-      </button>
     `;
-    list.appendChild(row);
+    list.appendChild(card);
   });
 
-  if (filtered.length === 0) {
-    list.innerHTML = '<div style="color:var(--muted);font-family:\'DM Mono\',monospace;font-size:.75rem;padding:2rem;text-align:center">no stocks match this filter</div>';
-  }
+  document.getElementById('stock-list').querySelectorAll('.stock-card').forEach((card,fi)=>{
+    const gi = stocks.indexOf(filtered[fi]);
+    if(openCards.has(gi)) card.querySelector('.expand-icon') && null;
+  });
 }
 
-function toggleRemove(idx) {
-  stocks[idx].removed = !stocks[idx].removed;
-  save();
+function toggleCard(gi){
+  if(openCards.has(gi)) openCards.delete(gi);
+  else openCards.add(gi);
   render();
 }
 
-function toggleRemoved() {
+function toggleRemove(gi){
+  stocks[gi].removed = !stocks[gi].removed;
+  save(); render();
+}
+
+function toggleRemoved(){
   showRemoved = !showRemoved;
-  document.getElementById('rm-label').textContent = showRemoved ? 'hide removed' : 'show removed';
+  document.getElementById('rm-toggle-btn').textContent = showRemoved?'hide removed':'show removed';
   render();
 }
 
-function toggleAdd() {
-  const p = document.getElementById('add-panel');
-  p.classList.toggle('open');
+function toggleAdd(){
+  document.getElementById('add-panel').classList.toggle('open');
 }
 
-function addStock() {
+function addStock(){
   const t = document.getElementById('f-ticker').value.trim().toUpperCase();
   const n = document.getElementById('f-name').value.trim();
-  if (!t || !n) { flash('ticker and name required', true); return; }
+  if(!t||!n){ flashStatus('ticker and name are required', true); return; }
   stocks.push({
-    ticker: t,
-    name: n,
-    country: document.getElementById('f-country').value.trim() || 'US',
-    price: document.getElementById('f-price').value || '—',
-    mktcap: document.getElementById('f-mktcap').value.trim() || '—',
-    pe: document.getElementById('f-pe').value || '—',
-    ytd: document.getElementById('f-ytd').value || '0',
-    cat: document.getElementById('f-cat').value || 'Other',
-    removed: false,
+    ticker:t, name:n,
+    country: document.getElementById('f-country').value.trim()||'US',
+    price:   document.getElementById('f-price').value||'',
+    mktcap:  document.getElementById('f-mktcap').value.trim()||'—',
+    pe:      document.getElementById('f-pe').value||'',
+    ytd:     document.getElementById('f-ytd').value||'0',
+    cat:     document.getElementById('f-cat').value||'Other',
+    ceo:     document.getElementById('f-ceo').value.trim()||'',
+    edu:     document.getElementById('f-edu').value.trim()||'',
+    prev:    document.getElementById('f-prev').value.trim()||'',
+    desc:    document.getElementById('f-desc').value.trim()||'',
+    vision:  document.getElementById('f-vision').value.trim()||'',
+    removed:false,
   });
-  ['f-ticker','f-name','f-country','f-price','f-mktcap','f-pe','f-ytd'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('f-cat').value = '';
-  save();
-  render();
+  ['f-ticker','f-name','f-country','f-price','f-mktcap','f-pe','f-ytd','f-ceo','f-edu','f-prev','f-desc','f-vision']
+    .forEach(id=>{ document.getElementById(id).value=''; });
+  document.getElementById('f-cat').value='';
+  save(); render();
   document.getElementById('add-panel').classList.remove('open');
 }
 
-document.getElementById('filter-bar').addEventListener('click', e => {
+function exportJSON(){
+  const blob = new Blob([JSON.stringify(stocks, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'ai-infra-watchlist.json';
+  a.click();
+}
+
+document.getElementById('filter-bar')||null;
+document.querySelector('.filter-row').addEventListener('click', e=>{
   const btn = e.target.closest('.fil');
-  if (!btn) return;
+  if(!btn) return;
   document.querySelectorAll('.fil').forEach(b=>b.classList.remove('on'));
   btn.classList.add('on');
   activeFilter = btn.dataset.f;
